@@ -1,0 +1,43 @@
+/StockEaze/
+  ├─ android/
+  ├─ ios/
+  ├─]node_modules/ (ignored)
+  ├─ src/
+  │  ├─ components/
+  │  │  ├─ CustomButton.tsx
+  │  │  ├─ CustomTextInput.tsx
+  │  │  ├─ InventoryItem.tsx
+  │  │  └─ LoadingDots.tsx
+  │  ├─ navigation/
+  │  │  ├─ AuthStack.tsx
+  │  │  ├─ MainStack.tsx
+  │  │  └─ NavigationTypes.ts
+  │  ├─ screens/
+  │  │  ├─ BarcodeScannerScreen.tsx
+  │  │  ├─ HomeScreen.tsx
+  │  │  ├─ InventoryScreen.tsx
+  │  │  ├─ LoginScreen.tsx
+  │  │  ├─ OrderScreen.tsx
+  │  │  ├─ ProductDetailsScreen.tsx
+  │  │  ├─ ProfileScreen.tsx
+  │  │  └─ SignUpScreen.tsx
+  │  └─ services/
+  │     └─ firebaseConfig.ts
+  ├─ .eslintrc.js
+  ├─ .gitignore
+  ├─ .prettierrc.js
+  ├─ .watchmanconfig
+  ├─ .yarnrc.yml
+  ├─ app.json
+  ├─ App.tsx
+  ├─ babel.config.js
+  ├─ Gemfile
+  ├─ Gemfile.lock
+  ├─ index.js
+  ├─ jest.config.js
+  ├─ metro.config.js
+  ├─ package-lock.json
+  ├─ package.json
+  ├─ README.md
+  ├─ tsconfig.json
+  └─ yarn.lock

@@ -1,11 +1,11 @@
-// InventoryScreen.tsx
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, RefreshControl, Text } from 'react-native';
+// src/screens/InventoryScreen.tsx
+import React, { useCallback, useState } from 'react';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { firestore } from '../services/firebaseConfig';
-import { collection, getDocs, QueryDocumentSnapshot } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, QueryDocumentSnapshot } from 'firebase/firestore';
+import { useFocusEffect } from '@react-navigation/native';
+import LoadingDots from '../components/LoadingDots';
 import CustomButton from '../components/CustomButton';
-import InventoryItem from '../components/InventoryItem';
-import LoadingDots from '../components/LoadingDots'; // Import LoadingDots component
 
 interface InventoryItemData {
     sId: string;
@@ -17,13 +17,12 @@ interface InventoryItemData {
 }
 
 const InventoryScreen = ({ navigation }: any): React.JSX.Element => {
-    const [inventory, setInventory] = useState<InventoryItemData[]>([]);
-    const [refreshing, setRefreshing] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true); // Add loading state
+    const [categories, setCategories] = useState<string[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const fetchData = async () => {
         try {
-            setLoading(true); // Set loading to true before fetching data
+            setLoading(true);
             const inventoryCollection = collection(firestore, 'inventory');
             const inventorySnapshot = await getDocs(inventoryCollection);
             const inventoryList = inventorySnapshot.docs.map((doc: QueryDocumentSnapshot) => {
@@ -37,56 +36,82 @@ const InventoryScreen = ({ navigation }: any): React.JSX.Element => {
                     category: data.category ?? 'Uncategorized',
                 };
             });
-            setInventory(inventoryList);
+
+            // Extract unique categories from inventory and add "All Categories" option
+            const uniqueCategories = Array.from(new Set(inventoryList.map(item => item.category)));
+            setCategories(['All Categories', ...uniqueCategories]); // Add "All Categories" at the start
         } catch (error) {
             console.error('Error fetching inventory data: ', error);
         } finally {
-            setLoading(false); // Set loading to false after data is fetched
+            setLoading(false);
         }
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // Refetch data whenever the screen is focused
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [])
+    );
 
-    const onRefresh = async () => {
-        setRefreshing(true);
-        await fetchData();
-        setRefreshing(false);
+    const handleCategoryPress = (category: string) => {
+        if (category === 'All Categories') {
+            navigation.navigate('CategoryItems', { category: null }); // Navigate to CategoryItems screen with no filter
+        } else {
+            navigation.navigate('CategoryItems', { category }); // Navigate to CategoryItems screen with selected category
+        }
     };
 
+    // Get screen width and calculate tile size for a grid of two columns
+    const { width } = Dimensions.get('window');
+    const tileSize = (width - 60) / 2; // Adjust to fit two tiles with proper margin
+
+    const handleDelete = async (id: string) => {
+        try {
+            await deleteDoc(doc(firestore, 'inventory', id));
+            fetchData(); // Refresh the data after deletion
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
+    };
+
+    const handleEdit = (item: any) => {
+        navigation.navigate('EditInventoryItemScreen', { item });
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [])
+    );
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Inventory</Text>
+            <View style={styles.headerContainer}>
+                <Text style={styles.header}>Categories</Text>
+                <CustomButton
+                    title="Add Product"
+                    onPress={() => navigation.navigate('ProductDetails')}
+                />
+            </View>
             {loading ? (
-                // Display custom loading dots while loading
                 <LoadingDots />
             ) : (
                 <FlatList
-                    data={inventory}
-                    keyExtractor={(item) => item.sId}
+                    data={categories}
+                    keyExtractor={(item) => item}
+                    key={`grid-${2}`} // Use key prop to force re-render when changing columns
+                    numColumns={2} // Display items in two columns
                     renderItem={({ item }) => (
-                        <InventoryItem
-                            name={item.name}
-                            stock={item.stock}
-                            price={item.price}
-                            description={item.description}
-                            category={item.category}
-                        />
+                        <TouchableOpacity
+                            style={[styles.categoryTile, { width: tileSize, height: tileSize }]}
+                            onPress={() => handleCategoryPress(item)}
+                        >
+                            <Text style={styles.categoryText}>{item}</Text>
+                        </TouchableOpacity>
                     )}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                    ListEmptyComponent={<Text style={styles.emptyText}>No items available</Text>}
-                    contentContainerStyle={inventory.length === 0 ? styles.emptyContainer : null}
+                    contentContainerStyle={styles.gridContainer}
                 />
             )}
-            <CustomButton
-                title="Add Product"
-                onPress={() => navigation.navigate('ProductDetails')}
-            />
-            <CustomButton
-                title="Scan Barcode"
-                onPress={() => navigation.navigate('BarcodeScanner')}
-            />
         </View>
     );
 };
@@ -94,28 +119,51 @@ const InventoryScreen = ({ navigation }: any): React.JSX.Element => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#f5f5f5',
+        padding: 20,
+        backgroundColor: '#f8f9fa',
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
     },
     header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
+        fontSize: 26,
+        fontWeight: '700',
         color: '#333',
-        marginBottom: 16,
     },
-    button: {
-        marginTop: 10,
+    addButton: {
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        backgroundColor: '#007BFF',
+        borderRadius: 5,
+        elevation: 3, // Adds subtle shadow for a raised effect
     },
-    emptyText: {
-        textAlign: 'center',
-        fontSize: 16,
-        color: '#666',
-        marginTop: 20,
-    },
-    emptyContainer: {
-        flexGrow: 1,
+    gridContainer: {
         justifyContent: 'center',
+        paddingBottom: 20, // Adds some space at the bottom
+    },
+    categoryTile: {
+        backgroundColor: '#FFFFFF',
+        borderColor: '#007BFF', // Blue border
+        borderWidth: 1.5,
+        borderRadius: 12,
+        margin: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 2, // Adds subtle shadow for a modern look
+    },
+    categoryText: {
+        color: '#007BFF',
+        fontWeight: '600',
+        fontSize: 17, // Slightly smaller font size to fit within the tiles
+        textAlign: 'center',
+        paddingHorizontal: 5,
     },
 });
 
