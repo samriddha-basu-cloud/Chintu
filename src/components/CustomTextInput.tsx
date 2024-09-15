@@ -13,6 +13,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({ placeholder, value, o
         <TextInput
             style={styles.input}
             placeholder={placeholder}
+            placeholderTextColor="gray" // Set the placeholder color to gray
             value={value}
             onChangeText={onChangeText}
             {...rest}
@@ -28,6 +29,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         padding: 8,
         borderRadius: 5,
+        color: 'black', // Set the input text color to black
     },
 });
 

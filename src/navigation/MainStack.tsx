@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator();
 const MainStack: React.FC = () => {
     return (
 
-            <Stack.Navigator initialRouteName="Inventory">
+            <Stack.Navigator initialRouteName="Inventory" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Inventory" component={InventoryScreen} />
                 <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
                 <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
