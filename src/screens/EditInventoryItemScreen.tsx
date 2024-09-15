@@ -1,4 +1,3 @@
-// src/screens/EditInventoryItemScreen.tsx
 import React, { useState } from 'react';
 import { View, StyleSheet, Modal, Text, TouchableOpacity } from 'react-native';
 import { firestore } from '../services/firebaseConfig';
@@ -59,6 +58,9 @@ const EditInventoryItemScreen = ({ route, navigation }: any): React.JSX.Element 
 
     return (
         <View style={styles.container}>
+            {/* Heading */}
+            <Text style={styles.heading}>Edit Item Details</Text>
+
             <CustomTextInput placeholder="Name" value={name} onChangeText={setName} />
             <CustomTextInput placeholder="Stock" value={stock} onChangeText={setStock} keyboardType="numeric" />
             <CustomTextInput placeholder="Price" value={price} onChangeText={setPrice} keyboardType="numeric" />
@@ -92,6 +94,13 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#FFFFFF',
+    },
+    heading: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 20,
+        textAlign: 'center', // Center the heading
     },
     modalContainer: {
         flex: 1,

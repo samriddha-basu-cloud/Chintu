@@ -3,6 +3,17 @@
   ├─ ios/
   ├─]node_modules/ (ignored)
   ├─ src/
+  │  ├─ assets/
+  │  │  ├─ icons/
+  │  │  │  ├─ delete.png
+  │  │  │  ├─ edit.png
+  │  │  │  ├─ home-outline.png
+  │  │  │  ├─ home.png
+  │  │  │  ├─ qrcode-outline.png
+  │  │  │  ├─ qrcode.png
+  │  │  │  ├─ user-outline.png
+  │  │  │  └─ user.png
+  │  │  └─ images/
   │  ├─ components/
   │  │  ├─ CustomButton.tsx
   │  │  ├─ CustomTextInput.tsx
@@ -14,6 +25,8 @@
   │  │  └─ NavigationTypes.ts
   │  ├─ screens/
   │  │  ├─ BarcodeScannerScreen.tsx
+  │  │  ├─ CategoryItemsScreen.tsx
+  │  │  ├─ EditInventoryItemScreen.tsx
   │  │  ├─ HomeScreen.tsx
   │  │  ├─ InventoryScreen.tsx
   │  │  ├─ LoginScreen.tsx
