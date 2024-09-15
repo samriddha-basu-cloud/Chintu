@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { LoginScreenNavigationProp } from '../navigation/NavigationTypes';
 
 const LoginScreen = () => {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<LoginScreenNavigationProp>();
   return (
     <View style={styles.loginPage}>
       <View style={styles.loginContainer}>

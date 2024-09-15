@@ -9,7 +9,7 @@ const BarcodeScanner: React.FC = () => {
   const handleBarCodeRead = (event: BarCodeReadEvent) => {
     if (event.data !== scannedData) {
       setScannedData(event.data);
-      Alert.alert("Scanned Data", event.data, [{ text: "OK" }]);
+      Alert.alert('Scanned Data', event.data, [{ text: 'OK' }]);
     }
   };
 

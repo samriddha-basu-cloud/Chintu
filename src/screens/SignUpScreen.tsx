@@ -9,9 +9,10 @@ import {
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from '@react-navigation/native';
+import  {SignUpScreenNavigationProp} from '../navigation/NavigationTypes';
 
 const SignUpScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SignUpScreenNavigationProp>();
   const [selectedCountry, setSelectedCountry] = useState('India');
 
   return (

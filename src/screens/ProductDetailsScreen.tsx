@@ -1,4 +1,3 @@
-// src/screens/ProductDetailsScreen.tsx
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import CustomTextInput from '../components/CustomTextInput';
@@ -21,7 +20,7 @@ const ProductDetailsScreen: React.FC<ProductDetailsScreenProps> = ({ navigation 
         }
 
         try {
-            const stockNumber = parseInt(stock);
+            const stockNumber = parseInt(stock,10);
             if (isNaN(stockNumber)) {
                 Alert.alert('Validation Error', 'Stock must be a number.');
                 return;
