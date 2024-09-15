@@ -1,34 +1,56 @@
-// src/screens/BarcodeScannerScreen.tsx
-import React from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { RNCamera } from 'react-native-camera';
-interface BarcodeScannerScreenProps {
-    navigation: any;
-}
+import React, { useState } from 'react';
+import { View, Text, Alert, StyleSheet } from 'react-native';
+import { RNCamera, BarCodeReadEvent } from 'react-native-camera';
 
-const BarcodeScannerScreen: React.FC<BarcodeScannerScreenProps> = ({ navigation }): React.JSX.Element => {
-    const onBarcodeRead = ({ data }: { data: string }) => {
+const BarcodeScanner: React.FC = () => {
+  const [scannedData, setScannedData] = useState<string | null>(null);
 
-        Alert.alert('Barcode detected', `Data: ${data}`);
-        navigation.goBack();
-    };
+  // Handle the barcode scanning event
+  const handleBarCodeRead = (event: BarCodeReadEvent) => {
+    if (event.data !== scannedData) {
+      setScannedData(event.data);
+      Alert.alert("Scanned Data", event.data, [{ text: "OK" }]);
+    }
+  };
 
-    return (
-        <View style={styles.container}>
-            <RNCamera
-                style={styles.preview}
-                onBarCodeRead={onBarcodeRead}
-                captureAudio={false}
-                type={RNCamera.Constants.Type.back}
-                flashMode={RNCamera.Constants.FlashMode.off}
-            />
+  return (
+    <View style={styles.container}>
+      <RNCamera
+        style={styles.camera}
+        onBarCodeRead={handleBarCodeRead}
+        captureAudio={false}
+        type={RNCamera.Constants.Type.back}
+        flashMode={RNCamera.Constants.FlashMode.off}
+      >
+        <View style={styles.overlay}>
+          <Text style={styles.scanText}>Scan a Barcode</Text>
         </View>
-    );
+      </RNCamera>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    preview: { flex: 1, justifyContent: 'flex-end', alignItems: 'center' },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  scanText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
-export default BarcodeScannerScreen;
+export default BarcodeScanner;

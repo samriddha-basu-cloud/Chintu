@@ -27,7 +27,6 @@ const ProductDetailsScreen: React.FC<ProductDetailsScreenProps> = ({ navigation 
                 return;
             }
 
-            // Add a new product to the Firestore collection
             await addDoc(collection(firestore, 'inventory'), { name, stock: stockNumber });
 
             Alert.alert('Success', 'Product added successfully!');
