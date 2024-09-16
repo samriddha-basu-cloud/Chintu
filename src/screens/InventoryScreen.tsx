@@ -1,6 +1,6 @@
-// src/screens/InventoryScreen.tsx
+// Import necessary components from React Native
 import React, { useCallback, useState } from 'react';
-import { View, FlatList, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
 import { firestore } from '../services/firebaseConfig';
 import { collection, deleteDoc, doc, getDocs, QueryDocumentSnapshot } from 'firebase/firestore';
 import { useFocusEffect } from '@react-navigation/native';
@@ -79,11 +79,21 @@ const InventoryScreen = ({ navigation }: any): React.JSX.Element => {
         navigation.navigate('EditInventoryItemScreen', { item });
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            fetchData();
-        }, [])
-    );
+    const getCategoryImage = (category: string) => {
+        switch (category) {
+            case 'All Categories':
+                return require('../assets/images/allCategory.png');
+            case 'Food':
+                return require('../assets/images/food.png');
+            case 'Grocery':
+                return require('../assets/images/grocery.png');
+            case 'Healthcare':
+                return require('../assets/images/healthCare.png');
+            default:
+                return null; // No image for "Others" or any other category
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
@@ -101,14 +111,27 @@ const InventoryScreen = ({ navigation }: any): React.JSX.Element => {
                     keyExtractor={(item) => item}
                     key={`grid-${2}`} // Use key prop to force re-render when changing columns
                     numColumns={2} // Display items in two columns
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={[styles.categoryTile, { width: tileSize, height: tileSize }]}
-                            onPress={() => handleCategoryPress(item)}
-                        >
-                            <Text style={styles.categoryText}>{item}</Text>
-                        </TouchableOpacity>
-                    )}
+                    renderItem={({ item }) => {
+                        const backgroundImage = getCategoryImage(item);
+                        return (
+                            <TouchableOpacity
+                                style={[styles.categoryTile, { width: tileSize, height: tileSize }]}
+                                onPress={() => handleCategoryPress(item)}
+                            >
+                                {backgroundImage ? (
+                                    <ImageBackground
+                                        source={backgroundImage}
+                                        style={styles.imageBackground}
+                                        imageStyle={{ opacity: 0.6 }} // Set reduced opacity for the image
+                                    >
+                                        <Text style={styles.categoryText}>{item}</Text>
+                                    </ImageBackground>
+                                ) : (
+                                    <Text style={styles.categoryText}>{item}</Text>
+                                )}
+                            </TouchableOpacity>
+                        );
+                    }}
                     contentContainerStyle={styles.gridContainer}
                 />
             )}
@@ -158,10 +181,17 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 2, // Adds subtle shadow for a modern look
     },
+    imageBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+    },
     categoryText: {
         color: '#007BFF',
-        fontWeight: '600',
-        fontSize: 17, // Slightly smaller font size to fit within the tiles
+        fontWeight: '900',
+        fontSize: 25, // Slightly smaller font size to fit within the tiles
         textAlign: 'center',
         paddingHorizontal: 5,
     },
