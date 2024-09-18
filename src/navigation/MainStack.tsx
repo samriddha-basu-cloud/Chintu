@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, View, StyleSheet } from 'react-native';
 import InventoryScreen from '../screens/InventoryScreen';
-import ProductDetailsScreen from '../screens/ProductDetailsScreen';
+// import ProductDetailsScreen from '../screens/ProductDetailsScreen';
 import BarcodeScannerScreen from '../screens/BarcodeScannerScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CategoryItemsScreen from '../screens/CategoryItemsScreen';
@@ -17,7 +17,7 @@ const MainTabs: React.FC = () => {
         <Tab.Navigator
             initialRouteName="Inventory"
             screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
+                tabBarIcon: ({ focused, color }) => {
                     let iconSource;
 
                     if (route.name === 'Inventory') {
@@ -71,7 +71,7 @@ const MainStack: React.FC = () => {
     return (
         <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="MainTabs" component={MainTabs} />
-            <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+            {/* <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} /> */}
             <Stack.Screen name="CategoryItems" component={CategoryItemsScreen} />
             <Stack.Screen name="EditInventoryItem" component={EditInventoryItemScreen} />
         </Stack.Navigator>
